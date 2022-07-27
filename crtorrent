@@ -3,10 +3,14 @@
 announce=""
 src=""
 main() {
+  chkutil mktorrent
   for dir; do
     test -d "$dir" || die "not a directory: $dir"
     create_torrent
   done
+}
+chkutil() {
+  command -v "$1" >/dev/null 2>&1 || die "$1 is not installed"
 }
 die() { printf >&2 '%s: error: %s\n' "${0##*/}" "$*"; exit 2; }
 create_torrent() {
