@@ -1,0 +1,40 @@
+#!/bin/sh
+# Create private torrents in bulk.
+announce=""
+src=""
+main() {
+  for dir; do
+    test -d "$dir" || die "not a directory: $dir"
+    create_torrent
+  done
+}
+die() { printf >&2 '%s: error: %s\n' "${0##*/}" "$*"; exit 2; }
+create_torrent() {
+  size="$(du -sh "$dir" | cut -f1 | sed 's/[A-Z]$//')"
+  case "$((
+    size > 0     && size <= 50   ? 1 :
+    size >= 50   && size <= 150  ? 2 :
+    size >= 150  && size <= 350  ? 3 :
+    size >= 350  && size <= 512  ? 4 :
+    size >= 512  && size <= 1024 ? 5 :
+    size >= 1024 && size <= 2048 ? 6 :
+    size >= 2048 && size <= 4096 ? 7 :
+    size >= 4096 && size <= 8192 ? 8 :
+    size >= 8192 ? 9 : 0
+  ))" in
+    # (2^15)/1024 = 32 (KiB), etc. More info on piece sizes can be
+    # found here: https://whatbox.ca/wiki/Creating_Torrents#rutorrent
+    1) piece=15 ;; # 32   KiB
+    2) piece=16 ;; # 64   KiB
+    3) piece=17 ;; # 128  KiB
+    4) piece=18 ;; # 256  KiB
+    5) piece=19 ;; # 512  KiB
+    6) piece=20 ;; # 1024 KiB
+    7) piece=21 ;; # 2048 KiB
+    8) piece=22 ;; # 4096 KiB
+    9) piece=23 ;; # 8192 KiB
+    0) die "invalid file size: $size" ;;
+  esac
+  mktorrent -a "$announce" -l $piece -p -s "$src" -v "$dir"
+}
+main "$@"
