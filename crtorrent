@@ -5,13 +5,18 @@ src=""
 main() {
   chkutil mktorrent
   for dir; do
-    test -d "$dir" || die "not a directory: $dir"
-    create_torrent
+    if test -d "$dir"; then
+      create_torrent
+    else
+      say "not a directory: $dir"
+      continue
+    fi
   done
 }
 chkutil() {
   command -v "$1" >/dev/null 2>&1 || die "$1 is not installed"
 }
+say() { printf >&2 '%s: %s\n' "${0##*/}" "$*"; }
 die() { printf >&2 '%s: error: %s\n' "${0##*/}" "$*"; exit 2; }
 create_torrent() {
   size="$(du -sh "$dir" | cut -f1 | sed 's/[A-Z]$//')"
