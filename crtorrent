@@ -6,7 +6,7 @@ main() {
   chkutil mktorrent
   for dir; do
     if test -d "$dir"; then
-      create_torrent
+      check_path_length && create_torrent
     else
       say "not a directory: $dir"
       continue
@@ -18,6 +18,11 @@ chkutil() {
 }
 say() { printf >&2 '%s: %s\n' "${0##*/}" "$*"; }
 die() { printf >&2 '%s: error: %s\n' "${0##*/}" "$*"; exit 2; }
+check_path_length() {
+  find "$dir" -type f | while read -r file; do
+    test ${#file} -lt 180 || die "path length exceeds 180 chars: $file"
+  done
+}
 create_torrent() {
   size="$(du -sh "$dir" | cut -f1 | sed 's/[A-Z]$//')"
   case "$((
