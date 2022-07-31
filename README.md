@@ -12,6 +12,10 @@ As of version 1.1, `mktorrent` does not automatically determine the
 piece length based on the size of a directory, whereas `crtorrent` does
 exactly that.
 
+## Dependencies
+
+The one and only dependency is `mktorrent`.
+
 ## Usage
 
 ```
