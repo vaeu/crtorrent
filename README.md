@@ -19,7 +19,7 @@ The one and only dependency is `mktorrent`.
 ## Usage
 
 ```
-crtorrent DIR1 [DIR2..]
+$ crtorrent DIR1 [DIR2..]
 ```
 
 `crtorrent` takes one or more directories as arguments and produces a
@@ -41,11 +41,11 @@ using text editor of your choice.
 Set custom announce URL using `sed`:
 
 ```
-sed -i '/^announce/ s,",&https://example.com/abc0d12e3/announce,' /path/to/crtorrent
+$ sed -i '/^announce/ s,",&https://example.com/abc0d12e3/announce,' /path/to/crtorrent
 ```
 
 Set ‘RED’ as primary source tag using `sed`:
 
 ```
-sed -i '/^src/ s,",&RED,' /path/to/crtorrent
+$ sed -i '/^src/ s,",&RED,' /path/to/crtorrent
 ```
